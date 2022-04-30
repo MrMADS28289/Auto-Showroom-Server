@@ -18,12 +18,20 @@ const run = async () => {
         await client.connect();
         const inventoryCollection = client.db('inventory').collection('cars');
 
+        // add inventory
         app.post('/inventory', async (req, res) => {
             const newInventory = req.body;
             const result = await inventoryCollection.insertOne(newInventory);
             res.send(result);
         })
-        console.log('bla');
+
+        // get inventory from db
+        app.get('/cars', async (req, res) => {
+            const query = {};
+            const cursor = inventoryCollection.find(query);
+            const services = await cursor.toArray();
+            res.send(services);
+        })
     }
     finally {
         // client.close();
