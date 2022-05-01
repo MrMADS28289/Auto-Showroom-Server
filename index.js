@@ -78,7 +78,7 @@ const run = async () => {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('Hello auto-showroom World!');
 });
 
 app.listen(port, () => {
