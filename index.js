@@ -40,6 +40,14 @@ const run = async () => {
             res.send(car);
         })
 
+        app.get('/myinventory', async (req, res) => {
+            const email = req.query.email;
+            const query = { userEmail: email };
+            const cursor = inventoryCollection.find(query);
+            const cars = await cursor.toArray();
+            res.send(cars);
+        })
+
         // update car
         app.put('/cars/:id', async (req, res) => {
             const id = req.params.id;
