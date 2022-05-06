@@ -41,7 +41,6 @@ const run = async () => {
         app.post('/login', (req, res) => {
             const email = req.body;
             const token = jwt.sign(email, process.env.SECRET_KEY)
-            // console.log(email, token);
             res.send({ token });
         })
 
@@ -54,10 +53,13 @@ const run = async () => {
 
         // get inventory from db
         app.get('/cars', async (req, res) => {
+            const pageNumber = Number(req.query.pageNumber);
+            const limit = Number(req.query.limit);
+            const count = await inventoryCollection.estimatedDocumentCount();
             const query = {};
             const cursor = inventoryCollection.find(query);
-            const cars = await cursor.toArray();
-            res.send(cars);
+            const cars = await cursor.skip(limit * pageNumber).limit(limit).toArray();
+            res.send({ cars, count });
         })
 
         app.get('/cars/:id', async (req, res) => {
@@ -70,7 +72,7 @@ const run = async () => {
         app.get('/myinventory', verifyJWT, async (req, res) => {
             const decodedEmail = req?.decoded?.email;
             const email = req?.query?.email;
-            console.log(decodedEmail, email);
+            // console.log(decodedEmail, email);
             if (email === decodedEmail) {
                 const query = { userEmail: email };
                 const cursor = inventoryCollection.find(query);
@@ -99,7 +101,6 @@ const run = async () => {
                 }
             }
             const result = await inventoryCollection.updateOne(filter, updateDoc, options);
-            console.log(result);
             res.send(result)
         })
 
