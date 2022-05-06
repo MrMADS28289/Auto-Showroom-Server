@@ -72,7 +72,6 @@ const run = async () => {
         app.get('/myinventory', verifyJWT, async (req, res) => {
             const decodedEmail = req?.decoded?.email;
             const email = req?.query?.email;
-            // console.log(decodedEmail, email);
             if (email === decodedEmail) {
                 const query = { userEmail: email };
                 const cursor = inventoryCollection.find(query);
